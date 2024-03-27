@@ -22,6 +22,13 @@ def delete_directory():
     except FileNotFoundError:
         print('Ошибка названия')
         delete_directory()
+def change_directory():
+    try:
+        name = input('Введите название папки: ')
+        os.chdir(name)
+    except FileNotFoundError:
+        print('Ошибка названия')
+        change_directory()
 def main():
     with open("config.txt", 'r') as file:
         path = file.readline()
@@ -46,6 +53,8 @@ def main():
             create_directory()
         if a == '2':
             delete_directory()
+        if a == '3':
+            change_directory()
         if a == '11':
             break
 
