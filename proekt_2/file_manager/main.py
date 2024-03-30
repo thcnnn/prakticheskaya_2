@@ -1,34 +1,80 @@
 import sys
 import os
-import PySimpleGUI as pg
+import shutil
+class Path_exception(Exception):
+    def __init__(self, message='Операция вне рабочей папки'):
+        self.message = message
+        super().__init__(self.message)
+def valid_path(name):
+    with open("/home/vboxuser/test_1/proekt_2/file_manager/config.txt", 'r') as file:
+        path = file.readline()
+    work_dir_abs = os.path.abspath(path)
+    file_path_abs = os.path.abspath(name)
+    if os.path.commonpath([work_dir_abs, file_path_abs]) != work_dir_abs:
+        raise Path_exception
+    return True
+def operation(type_file, type_operation):
+    name = input(f'Введите название {type_file}: ')
+    if valid_path(name):
+        try:
+            if type_file == 'папки':
+                if type_operation == '1':
+                    os.mkdir(name)
+                if type_operation == '2':
+                    os.rmdir(name)
+                if type_operation == '3':
+                    os.chdir(name)
+            if type_file == 'файла':
+                if type_operation == '4':
+                    text_file = open(name, 'w')
+                    text_file.close()
+                if type_operation == '5':
+                    try:
+                        fill = input('Введите текст: ')
+                        text_file = open(name, 'w')
+                        text_file.write(fill)
+                        text_file.close()
+                    except:
+                        print('Ошибка названия')
+                        operation(type_file, type_operation)
+                if type_operation == '6':
+                    text_file = open(name, 'r')
+                    print(text_file.read())
+                    text_file.close()
+                if type_operation == '7':
+                    os.remove(name)
+                if type_operation == '8':
+                    dest = input('Введите папку: ')
+                    if valid_path(dest):
+                        try:
+                            shutil.copy(name, dest)
+                        except:
+                            print('Ошибка названия')
+                            operation(type_file, type_operation)
+                if type_operation == '9':
+                    dest = input('Введите папку: ')
+                    if valid_path(dest):
+                        try:
+                            shutil.move(name, dest)
+                        except:
+                            print('Ошибка названия')
+                            operation(type_file, type_operation)
+                if type_operation == '10':
+                    try:
+                        new_name = input('Введите новое название файла: ')
+                        os.rename(name, new_name)
+                    except:
+                        print('Ошибка названия')
+                        operation(type_file, type_operation)
+        except Exception as msg:
+            print(msg)
+            operation(type_file, type_operation)
 
-def valid_path(config_path, path):
-    # if len(path.split(r'/')) == 1:
-    #     return True
-    # elif config_path.split()
-    pass
-def create_directory():
-    try:
-        name = input('Введите название папки: ')
-        os.mkdir(name)
-    except FileNotFoundError:
-        print('Ошибка названия')
-        create_directory()
 
-def delete_directory():
-    try:
-        name = input('Введите название папки: ')
-        os.rmdir(name)
-    except FileNotFoundError:
-        print('Ошибка названия')
-        delete_directory()
-def change_directory():
-    try:
-        name = input('Введите название папки: ')
-        os.chdir(name)
-    except FileNotFoundError:
-        print('Ошибка названия')
-        change_directory()
+
+
+
+
 def main():
     with open("config.txt", 'r') as file:
         path = file.readline()
@@ -49,12 +95,10 @@ def main():
         print('10. Переименование файлов')
         print('11. Выйти из выполнения кода')
         a = input('Введите цифру нужной операции: ')
-        if a == '1':
-            create_directory()
-        if a == '2':
-            delete_directory()
-        if a == '3':
-            change_directory()
+        if a in ['1', '2', '3']:
+            operation('папки', a)
+        if a in ['4', '5', '6', '7', '8', '9', '10']:
+            operation('файла', a)
         if a == '11':
             break
 
