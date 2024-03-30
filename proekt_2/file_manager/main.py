@@ -72,7 +72,61 @@ def operation(type_file, type_operation):
 
 
 
-
+def for_interface(type_file, type_operation, name, name2=None):
+    if valid_path(name):
+        try:
+            if type_file == 'папки':
+                if type_operation == '1':
+                    os.mkdir(name)
+                if type_operation == '2':
+                    os.rmdir(name)
+                if type_operation == '3':
+                    os.chdir(name)
+            if type_file == 'файла':
+                if type_operation == '4':
+                    text_file = open(name, 'w')
+                    text_file.close()
+                if type_operation == '5':
+                    try:
+                        fill = name2
+                        text_file = open(name, 'w')
+                        text_file.write(fill)
+                        text_file.close()
+                    except:
+                        print('Ошибка названия')
+                        for_interface(type_file, type_operation, name, name2=None)
+                if type_operation == '6':
+                    text_file = open(name, 'r')
+                    print(text_file.read())
+                    text_file.close()
+                if type_operation == '7':
+                    os.remove(name)
+                if type_operation == '8':
+                    dest = name2
+                    if valid_path(dest):
+                        try:
+                            shutil.copy(name, dest)
+                        except:
+                            print('Ошибка названия')
+                            for_interface(type_file, type_operation, name, name2=None)
+                if type_operation == '9':
+                    dest = name2
+                    if valid_path(dest):
+                        try:
+                            shutil.move(name, dest)
+                        except:
+                            print('Ошибка названия')
+                            for_interface(type_file, type_operation, name, name2=None)
+                if type_operation == '10':
+                    try:
+                        new_name = name2
+                        os.rename(name, new_name)
+                    except:
+                        print('Ошибка названия')
+                        for_interface(type_file, type_operation, name, name2=None)
+        except Exception as msg:
+            print(msg)
+            for_interface(type_file, type_operation, name, name2=None)
 
 
 def main():
